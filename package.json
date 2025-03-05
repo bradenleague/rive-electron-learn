@@ -1,0 +1,48 @@
+{
+  "name": "vite-electron-rive",
+  "version": "1.0.0",
+  "description": "A desktop application using Vite, Electron, and Rive",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "concurrently -k \"vite\" \"npm run electron:dev\"",
+    "build": "vite build",
+    "electron:dev": "cross-env IS_DEV=true electron .",
+    "electron:build": "electron-builder",
+    "app:build": "npm run build && npm run electron:build"
+  },
+  "keywords": [
+    "vite",
+    "electron",
+    "rive"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "rive-react": "^4.18.3"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "electron": "^29.4.6",
+    "electron-builder": "^24.13.3",
+    "electron-is-dev": "^3.0.1",
+    "vite": "^5.4.14",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.vite-electron-rive.app",
+    "productName": "Vite Electron Rive",
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets",
+      "output": "release"
+    }
+  },
+  "type": "module"
+}

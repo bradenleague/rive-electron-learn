@@ -1,0 +1,31 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #282c34;
+  color: white;
+}
+
+.app {
+  padding: 2rem;
+  text-align: center;
+}
+
+.rive-container {
+  display: flex;
+  justify-content: center;
+  margin: 2rem auto;
+  background-color: #1e2128;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.electron-info {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+} 

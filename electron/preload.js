@@ -1,4 +1,12 @@
-// Expose any required Node.js functionality to the renderer process
+const { contextBridge, ipcRenderer } = require('electron');
+
+// Expose protected methods that allow the renderer process to use
+// the ipcRenderer without exposing the entire object
+contextBridge.exposeInMainWorld('electron', {
+  openFile: () => ipcRenderer.invoke('open-file'),
+  // Add other IPC calls your app needs
+});
+
 window.addEventListener('DOMContentLoaded', () => {
   const replaceText = (selector, text) => {
     const element = document.getElementById(selector);

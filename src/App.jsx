@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRive, useStateMachineInput } from 'rive-react';
+import { isElectron, getElectronAPI } from './utils/environment';
 
 function App() {
   // Load the Rive animation
@@ -63,21 +64,6 @@ function App() {
     }
   };
 
-  // Example: Trigger hover on mouse events
-  const handleMouseEnter = () => {
-    if (hoverInput) {
-      hoverInput.value = true;
-      setDebugInfo(prev => ({ ...prev, hoverState: true }));
-    }
-  };
-
-  const handleMouseLeave = () => {
-    if (hoverInput) {
-      hoverInput.value = false;
-      setDebugInfo(prev => ({ ...prev, hoverState: false }));
-    }
-  };
-
   // Define the theme-based styles
   const appStyles = {
     backgroundColor: debugInfo.themeState ? '#f5f5f5' : '#333',
@@ -87,6 +73,45 @@ function App() {
     padding: '20px'
   };
 
+  // Keep the environment detection but comment out the UI elements
+  const [electronFeatures, setElectronFeatures] = useState(false);
+
+  useEffect(() => {
+    // Check if we're running in Electron
+    if (isElectron()) {
+      setElectronFeatures(true);
+      // Any Electron-specific initialization
+    }
+    if (rive) {
+      // Listen for the 'knob hover' event from Rive
+      rive.on('knob hover', () => {
+        if (hoverInput) hoverInput.value = true;
+      });
+
+      // Listen for the 'knob unhover' event from Rive
+      rive.on('knob unhover', () => {
+        if (hoverInput) hoverInput.value = false;
+      });
+    }
+  }, [rive, hoverInput]);
+
+  /* Keeping the handler but commenting out for future use
+  const handleFileAction = async () => {
+    if (isElectron()) {
+      // Use Electron API for file operations
+      const api = getElectronAPI();
+      if (api) {
+        const result = await api.openFile();
+        // Handle result
+      }
+    } else {
+      // Web fallback - perhaps use the File System Access API
+      // or show a different UI option for web users
+      alert('This feature uses the file system and is only available in the desktop app');
+    }
+  };
+  */
+
   return (
     <div className="app" style={appStyles}>
       <h1>Vite + Electron + Rive</h1>
@@ -94,15 +119,13 @@ function App() {
         className="rive-container"
         style={{ 
           width: 400, 
-          height: 400, 
+          height: 300, 
           backgroundColor: debugInfo.themeState ? '#e0e0e0' : '#444',
           borderRadius: '8px',
           transition: 'background-color 0.3s ease',
           margin: '0 auto'
         }}
-        onClick={handleToggle} // 👈 Click to toggle the switch
-        onMouseEnter={handleMouseEnter} // 👈 Start hover effect
-        onMouseLeave={handleMouseLeave} // 👈 Stop hover effect
+        onClick={handleToggle}
       >
         <RiveComponent />
       </div>
@@ -124,6 +147,12 @@ function App() {
           </li>
         </ul>
       </div>
+      
+      {/* Commenting out the file button while keeping environment support
+      <button onClick={handleFileAction}>
+        {electronFeatures ? 'Open File (Desktop)' : 'Files (Web Preview)'}
+      </button>
+      */}
     </div>
   );
 }

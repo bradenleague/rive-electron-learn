@@ -10,7 +10,6 @@ function App() {
 
   // State to track input values for debugging
   const [debugInfo, setDebugInfo] = useState({
-    hoverState: false,
     themeState: false
   });
 
@@ -34,15 +33,14 @@ function App() {
     SWITCH_THEME_INPUT
   );
 
-  // Update debug info when input values change
+  // Update debug info when theme input value changes
   useEffect(() => {
-    if (hoverInput || switchThemeInput) {
+    if (switchThemeInput) {
       setDebugInfo({
-        hoverState: hoverInput?.value || false,
         themeState: switchThemeInput?.value || false
       });
     }
-  }, [hoverInput?.value, switchThemeInput?.value]);
+  }, [switchThemeInput?.value]);
 
   // Example: Toggle 'swithTheme' when clicking the container
   const handleToggle = () => {
@@ -57,10 +55,9 @@ function App() {
       }
       
       // Update debug info
-      setDebugInfo(prev => ({
-        ...prev,
+      setDebugInfo({
         themeState: switchThemeInput.value
-      }));
+      });
     }
   };
 
@@ -80,18 +77,36 @@ function App() {
     // Check if we're running in Electron
     if (isElectron()) {
       setElectronFeatures(true);
-      // Any Electron-specific initialization
     }
-    if (rive) {
-      // Listen for the 'knob hover' event from Rive
+    
+    if (rive && hoverInput) {
+      const updateHoverState = (isHovering) => {
+        if (hoverInput) {
+          hoverInput.value = isHovering;
+        }
+      };
+
+      // Listen for hover events
       rive.on('knob hover', () => {
-        if (hoverInput) hoverInput.value = true;
+        updateHoverState(true);
+      });
+      rive.on('knob unhover', () => {
+        updateHoverState(false);
+      });
+      // Listen for tap/click events for mobile
+      rive.on('knob tap', () => updateHoverState(true));
+      // Reset hover state after a short delay when tapped
+      rive.on('knob release', () => {
+        setTimeout(() => updateHoverState(false), 300);
       });
 
-      // Listen for the 'knob unhover' event from Rive
-      rive.on('knob unhover', () => {
-        if (hoverInput) hoverInput.value = false;
-      });
+      // Cleanup listeners on unmount
+      return () => {
+        rive.off('knob hover');
+        rive.off('knob unhover');
+        rive.off('knob tap');
+        rive.off('knob release');
+      };
     }
   }, [rive, hoverInput]);
 
@@ -139,12 +154,7 @@ function App() {
         <h3>State Machine Debug Info</h3>
         <ul style={{ listStyleType: 'none', padding: 0 }}>
           <li><strong>State Machine:</strong> {STATE_MACHINE_NAME}</li>
-          <li><strong>Hover State:</strong> {debugInfo.hoverState ? 'Active' : 'Inactive'}</li>
           <li><strong>Theme Switch:</strong> {debugInfo.themeState ? 'ON (Light)' : 'OFF (Dark)'}</li>
-          <li><strong>Input Types:</strong> 
-            Hover: {hoverInput ? (typeof hoverInput.fire === 'function' ? 'Trigger' : 'Boolean') : 'Not loaded'}, 
-            Switch: {switchThemeInput ? (typeof switchThemeInput.fire === 'function' ? 'Trigger' : 'Boolean') : 'Not loaded'}
-          </li>
         </ul>
       </div>
       

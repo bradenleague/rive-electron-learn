@@ -7,25 +7,80 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #282c34;
   color: white;
+  min-height: 100vh;
 }
 
 .app {
-  padding: 2rem;
+  padding: clamp(1rem, 5vw, 2rem);
   text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.app h1 {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  margin-bottom: 2rem;
 }
 
 .rive-container {
   display: flex;
   justify-content: center;
-  margin: 2rem auto;
+  align-items: center;
+  margin: 1rem auto;
   background-color: #1e2128;
   border-radius: 8px;
   overflow: hidden;
+  width: min(90vw, 400px);
+  height: min(70vw, 300px);
+  touch-action: manipulation; /* Improves touch handling */
+  cursor: pointer;
+}
+
+.state-machine-debug {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  margin: 1rem auto;
+  max-width: min(90vw, 400px);
+}
+
+.state-machine-debug h3 {
+  margin-top: 0;
+  font-size: clamp(1rem, 3vw, 1.5rem);
+}
+
+.state-machine-debug ul {
+  margin: 0;
+  padding: 0.5rem;
+}
+
+.state-machine-debug li {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+/* Add better touch feedback for mobile */
+@media (hover: none) {
+  .rive-container:active {
+    opacity: 0.8;
+  }
+}
+
+/* Adjust spacing for smaller screens */
+@media (max-width: 480px) {
+  .app {
+    padding: 1rem;
+  }
+  
+  .state-machine-debug {
+    padding: 1rem !important;
+  }
 }
 
 .electron-info {
-  margin-top: 2rem;
+  margin-top: 1rem;
   padding: 1rem;
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 8px;
+  max-width: min(90vw, 400px);
+  margin-left: auto;
+  margin-right: auto;
 } 
